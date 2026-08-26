@@ -303,24 +303,24 @@ class AuthController extends Controller
                 $response = [
                     'success' => false,
                     'message' => 'Account already setuped',
-                    'status' => 500
+                    'status' => 400
                 ];
-                return response()->json($response, 500);
+                return response()->json($response, 400);
             }
 
             $response = [
                 'success' => false,
                 'message' => 'Mobile is already registered.',
-                'status' => 500
+                'status' => 400
             ];
-            return response()->json($response, 500);
+            return response()->json($response, 400);
         }
         $response = [
             'success' => false,
             'message' => 'Email is already taken',
-            'status' => 500
+            'status' => 400
         ];
-        return response()->json($response, 500);
+        return response()->json($response, 400);
     }
 
     public function adminLogin(Request $request)
