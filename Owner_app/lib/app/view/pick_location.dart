@@ -47,7 +47,7 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
       if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
         throw 'Location permission denied.';
       }
-      Position position = await Geolocator.getCurrentPosition();
+      Position position = await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 8));
       final target = LatLng(position.latitude, position.longitude);
       setState(() => _selected = target);
       await _mapController?.animateCamera(CameraUpdate.newLatLng(target));

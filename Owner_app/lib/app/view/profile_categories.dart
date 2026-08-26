@@ -36,7 +36,7 @@ class _ProfileCategoriesState extends State<ProfileCategoriesScreen> {
                               alignment: Alignment.topLeft,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 70),
-                                child: Row(children: [IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back, color: ThemeProvider.whiteColor))]),
+                                child: Row(children: [IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back, color: ThemeProvider.whiteColor))]),
                               ),
                             ),
                             Positioned(
@@ -126,11 +126,11 @@ class _ProfileCategoriesState extends State<ProfileCategoriesScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: List.generate(
-                                              value.profileInfo.webCatesData!.length,
+                                              (value.profileInfo.webCatesData ?? []).length,
                                               (index) => Padding(
                                                 padding: const EdgeInsets.only(bottom: 2),
                                                 child: Text(
-                                                  value.profileInfo.webCatesData![index].name.toString(),
+                                                  value.profileInfo.webCatesData?[index].name.toString() ?? '',
                                                   style: const TextStyle(fontFamily: 'medium', fontSize: 15, color: ThemeProvider.blackColor),
                                                 ),
                                               ),
@@ -224,9 +224,9 @@ class _ProfileCategoriesState extends State<ProfileCategoriesScreen> {
                                             ),
                                             const SizedBox(width: 12),
                                             Text(
-                                              value.profileInfo.cityData!.name.toString() == '' || value.profileInfo.cityData!.name!.isEmpty
-                                                  ? 'Select'.tr
-                                                  : value.profileInfo.cityData!.name.toString(),
+                                               value.profileInfo.cityData?.name == null || value.profileInfo.cityData!.name.toString() == '' || value.profileInfo.cityData!.name!.isEmpty
+                                                   ? 'Select'.tr
+                                                   : value.profileInfo.cityData!.name.toString(),
                                               style: const TextStyle(fontFamily: 'medium', fontSize: 15, color: ThemeProvider.blackColor),
                                             ),
                                           ],

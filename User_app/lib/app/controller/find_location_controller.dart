@@ -80,8 +80,15 @@ class FindLocationController extends GetxController implements GetxService {
       Get.offAndToNamed(AppRouter.getTabsBarRoute());
     }).catchError((error) async {
       Get.back();
-      showToast(error.toString());
-      await Geolocator.openLocationSettings();
+      showToast('Location service unavailable. Using default location.'.tr);
+      parser.saveLatLng(21.5397106, 71.8215543, 'Bhavnagar, Gujarat, India');
+      Get.delete<TabsController>(force: true);
+      Get.delete<HomeController>(force: true);
+      Get.delete<NearController>(force: true);
+      Get.delete<CategoriesController>(force: true);
+      Get.delete<BookingController>(force: true);
+      Get.delete<AccountController>(force: true);
+      Get.offAndToNamed(AppRouter.getTabsBarRoute());
     });
   }
 
@@ -102,7 +109,7 @@ class FindLocationController extends GetxController implements GetxService {
     if (permission == LocationPermission.deniedForever) {
       return Future.error('Location permissions are permanently denied, we cannot request permissions.'.tr);
     }
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 8));
   }
 
   void onMapCreated(GoogleMapController controller) {

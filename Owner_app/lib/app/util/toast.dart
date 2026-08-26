@@ -5,34 +5,42 @@ import 'package:owner/app/util/theme.dart';
 
 void showToast(String message, {bool isError = true}) {
   HapticFeedback.lightImpact();
-  Get.showSnackbar(
-    GetSnackBar(
-      backgroundColor: isError ? Colors.red : Colors.black,
-      message: message.tr,
-      duration: const Duration(seconds: 3),
-      snackStyle: SnackStyle.FLOATING,
-      margin: const EdgeInsets.all(10),
-      borderRadius: 10,
-      isDismissible: true,
-      dismissDirection: DismissDirection.horizontal,
-    ),
-  );
+  try {
+    Get.showSnackbar(
+      GetSnackBar(
+        backgroundColor: isError ? Colors.red : Colors.black,
+        message: message.tr,
+        duration: const Duration(seconds: 3),
+        snackStyle: SnackStyle.FLOATING,
+        margin: const EdgeInsets.all(10),
+        borderRadius: 10,
+        isDismissible: true,
+        dismissDirection: DismissDirection.horizontal,
+      ),
+    );
+  } catch (e) {
+    debugPrint("Toast (Error): $message");
+  }
 }
 
 void successToast(String message) {
   HapticFeedback.lightImpact();
-  Get.showSnackbar(
-    GetSnackBar(
-      backgroundColor: Colors.green,
-      message: message.tr,
-      duration: const Duration(seconds: 3),
-      snackStyle: SnackStyle.FLOATING,
-      margin: const EdgeInsets.all(10),
-      borderRadius: 10,
-      isDismissible: true,
-      dismissDirection: DismissDirection.horizontal,
-    ),
-  );
+  try {
+    Get.showSnackbar(
+      GetSnackBar(
+        backgroundColor: Colors.green,
+        message: message.tr,
+        duration: const Duration(seconds: 3),
+        snackStyle: SnackStyle.FLOATING,
+        margin: const EdgeInsets.all(10),
+        borderRadius: 10,
+        isDismissible: true,
+        dismissDirection: DismissDirection.horizontal,
+      ),
+    );
+  } catch (e) {
+    debugPrint("Toast (Success): $message");
+  }
 }
 
 Future<bool> clearCartAlert() async {

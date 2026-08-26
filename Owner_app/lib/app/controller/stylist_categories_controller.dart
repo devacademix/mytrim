@@ -74,12 +74,10 @@ class StylistCategoriesController extends GetxController implements GetxService 
 
   Future<void> onAdd() async {
     Get.find<AddStylistController>().onSaveCategory(selectedCategories.join(','), selectedCateName);
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 
   void onBack() {
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 }

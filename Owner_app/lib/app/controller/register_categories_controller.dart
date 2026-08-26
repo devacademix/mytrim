@@ -79,7 +79,6 @@ class RegisterCategoriesController extends GetxController implements GetxService
   }
 
   void onBack() {
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 }

@@ -107,7 +107,6 @@ class IndividualprofileCategoriesController extends GetxController implements Ge
   }
 
   void onBack() {
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 }

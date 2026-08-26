@@ -35,9 +35,11 @@ class ApiService extends GetxService {
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
       for (MultipartBody multipart in multipartBody) {
         File file = File(multipart.file.path);
-        request.files.add(http.MultipartFile(multipart.key, file.readAsBytes().asStream(), file.lengthSync(), filename: file.path.split('/').last));
+        // Use Uri.file for cross-platform filename extraction (handles both / and \)
+        String fileName = Uri.file(file.path).pathSegments.last;
+        request.files.add(http.MultipartFile(multipart.key, file.readAsBytes().asStream(), file.lengthSync(), filename: fileName));
       }
-      http.Response response = await http.Response.fromStream(await request.send());
+      http.Response response = await http.Response.fromStream(await request.send().timeout(Duration(seconds: timeoutInSeconds)));
       return parseResponse(response, uri);
     } catch (e) {
       return const Response(statusCode: 1, statusText: connectionIssue);

@@ -96,7 +96,7 @@ class LoginController extends GetxController implements GetxService {
       Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
       debugPrint(myMap['user']['id'].toString());
 
-      if (myMap['user'] != '' && myMap['token'] != '' && myMap['user']['type'] != 'user') {
+      if (myMap['user'] != '' && myMap['token'] != '' && (myMap['user']['type'] == 'salon' || myMap['user']['type'] == 'individual')) {
         debugPrint(myMap['user']['id'].toString());
         debugPrint(myMap['user']['id'].toString());
 

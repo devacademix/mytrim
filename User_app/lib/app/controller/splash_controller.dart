@@ -30,23 +30,31 @@ class SplashController extends GetxController implements GetxService {
   }
 
   Future<void> checkNotificationPermission() async {
-    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-    firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: true,
-      badge: true,
-      carPlay: true,
-      criticalAlert: true,
-      provisional: true,
-      sound: true,
-    );
-    firebaseMessaging.getToken().then((value) async {
-      String? token = value;
-      parser.saveDeviceToken(value.toString());
-      debugPrint('/////////////////////////');
-      debugPrint(token);
-      debugPrint('/////////////////////////');
-    });
+    try {
+      if (GetPlatform.isWindows) {
+        debugPrint('Firebase Messaging is not supported on Windows Desktop.');
+        return;
+      }
+      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      firebaseMessaging.requestPermission(
+        alert: true,
+        announcement: true,
+        badge: true,
+        carPlay: true,
+        criticalAlert: true,
+        provisional: true,
+        sound: true,
+      );
+      firebaseMessaging.getToken().then((value) async {
+        String? token = value;
+        parser.saveDeviceToken(value.toString());
+        debugPrint('/////////////////////////');
+        debugPrint(token);
+        debugPrint('/////////////////////////');
+      });
+    } catch (e) {
+      debugPrint('Firebase messaging permission check failed: $e');
+    }
   }
 
   Future<bool> initSharedData() {

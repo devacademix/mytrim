@@ -121,15 +121,10 @@ class ProfileController extends GetxController with GetTickerProviderStateMixin 
       ),
       barrierDismissible: false,
     );
-    Response response = await parser.logout();
+    await parser.logout();
     Get.back();
-    if (response.statusCode == 200) {
-      parser.clearAccount();
-      Get.toNamed(AppRouter.getInitialRoute());
-      update();
-    } else {
-      ApiChecker.checkApi(response);
-    }
+    parser.clearAccount();
+    Get.offAllNamed(AppRouter.getInitialRoute());
     update();
   }
 }

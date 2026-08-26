@@ -54,14 +54,9 @@ class AccountController extends GetxController implements GetxService {
       ),
       barrierDismissible: false,
     );
-    Response response = await parser.logout();
+    await parser.logout();
     Get.back();
-    if (response.statusCode == 200) {
-      parser.clearAccount();
-      update();
-    } else {
-      ApiChecker.checkApi(response);
-    }
+    parser.clearAccount();
     update();
   }
 

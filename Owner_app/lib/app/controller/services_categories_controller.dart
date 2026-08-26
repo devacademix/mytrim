@@ -78,12 +78,10 @@ class ServicesCategoriesController extends GetxController implements GetxService
 
   Future<void> onSave() async {
     Get.find<AddServicesController>().onSaveCategory(selectedService, selectedServiceName);
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 
   void onBack() {
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 }

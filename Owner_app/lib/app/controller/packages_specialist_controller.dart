@@ -78,12 +78,10 @@ class PackagesSpecialistController extends GetxController implements GetxService
 
   Future<void> onAdd() async {
     Get.find<AddPackagesController>().onSaveSpecialistCate(selectedSpecialist.join(','), selectedSpecialistName);
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 
   void onBack() {
-    var context = Get.context as BuildContext;
-    Navigator.of(context).pop(true);
+    Get.back();
   }
 }
