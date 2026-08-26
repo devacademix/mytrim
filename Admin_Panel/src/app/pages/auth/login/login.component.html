@@ -1,0 +1,104 @@
+<!-- 
+  Authors : Saundarya (Rahul Jograna)
+  Website : https://saundarya.com/
+  App Name : Ultimate Salon Full App Flutter
+  This App Template Source code is licensed as per the
+  terms found in the Website https://saundarya.com/license
+  Copyright and Good Faith Purchasers © 2024-present Saundarya.
+ -->
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+
+<div class="login-wrapper">
+  <!-- Glowing background blobs -->
+  <div class="glow-blob glow-blob-1"></div>
+  <div class="glow-blob glow-blob-2"></div>
+  <div class="glow-blob glow-blob-3"></div>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-card-body">
+        
+        <!-- Logo Container -->
+        <div class="brand-logo-container">
+          <img src="assets/img/brand/big_logo.png" alt="Saundarya Logo" class="brand-logo">
+        </div>
+
+        <form (submit)="onLogin(); $event.preventDefault()">
+          <h2 class="login-title">{{util.translate('Login')}}</h2>
+          <p class="login-subtitle">{{util.translate('Sign In to your account')}}</p>
+
+          <!-- Email Input Group -->
+          <div class="custom-input-group" [class.error]="submited == true && email == ''">
+            <label class="input-label">{{util.translate('Email')}}</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <input 
+                [placeholder]="util.translate('Email')" 
+                type="email" 
+                [(ngModel)]="email"
+                [ngModelOptions]="{standalone: true}" 
+                class="custom-input" />
+            </div>
+          </div>
+
+          <!-- Password Input Group -->
+          <div class="custom-input-group" [class.error]="submited == true && password == ''">
+            <label class="input-label">{{util.translate('Password')}}</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input 
+                [placeholder]="util.translate('Password')" 
+                type="password" 
+                [(ngModel)]="password"
+                [ngModelOptions]="{standalone: true}" 
+                class="custom-input" />
+            </div>
+          </div>
+
+          <!-- Forgot Password -->
+          <div class="action-row">
+            <button type="button" class="forgot-btn" (click)="forgot()">
+              {{util.translate('Forgot password?')}}
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="submit-btn" (click)="onLogin()">
+            <span>{{util.translate('Login')}}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+
+          <!-- Language Selector -->
+          <div class="language-row" *ngIf="util.allLanguages && util.allLanguages.length > 0">
+            <div class="language-selector-wrapper">
+              <span class="lang-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+              </span>
+              <select class="custom-select" [ngModelOptions]="{standalone: true}" [(ngModel)]="langId" (change)="changeLanguages()">
+                <option [value]="item.code" *ngFor="let item of util.allLanguages"> {{item.name}} </option>
+              </select>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

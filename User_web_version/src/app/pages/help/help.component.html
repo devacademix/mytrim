@@ -1,0 +1,15 @@
+<!--
+  Authors : Saundarya (Rahul Jograna)
+  Website : https://saundarya.com/
+  App Name : Ultimate Salon Full App Flutter
+  This App Template Source code is licensed as per the
+  terms found in the Website https://saundarya.com/license
+  Copyright and Good Faith Purchasers © 2024-present Saundarya.
+ -->
+<div class="container">
+  <div *ngIf="!loaded">
+    <ngx-skeleton-loader *ngFor="let item of [1,2,3,4,5,6,7,8,9]"
+      [theme]="{ 'border-radius': '5px', height: '10px',width:'100%'}"></ngx-skeleton-loader>
+  </div>
+  <p [innerHTML]="content" *ngIf="loaded"></p>
+</div>

@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+$font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$card-bg: #ffffff;
+$border-color: #f1f5f9;
+$text-main: #0f172a;
+$text-secondary: #475569;
+$text-muted: #94a3b8;
+
+// Dashboard container
+.animated.fadeIn {
+  font-family: $font-family;
+  background-color: #f8fafc;
+  padding: 24px;
+  min-height: calc(100vh - 56px);
+}
+
+// Welcome Greeting Banner
+.dashboard-welcome-banner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 28px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(30, 27, 75, 0.15);
+
+  .banner-glow {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
+    filter: blur(40px);
+    top: -50px;
+    right: -50px;
+    pointer-events: none;
+  }
+
+  .banner-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .banner-subtitle {
+    font-size: 15px;
+    color: #c7d2fe;
+    font-weight: 400;
+  }
+
+  .banner-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 99px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #e0e7ff;
+    margin-top: 15px;
+
+    svg {
+      opacity: 0.8;
+    }
+  }
+}
+
+// Premium KPI Cards
+.dashboard-kpi-card {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(99, 102, 241, 0.04);
+    
+    .kpi-icon-container {
+      transform: scale(1.08);
+    }
+  }
+
+  .kpi-accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    border-radius: 5px 0 0 5px;
+  }
+
+  // Accent Colors for Cards
+  .appointments-accent { background: #6366f1; }
+  .freelancers-accent { background: #f59e0b; }
+  .users-accent { background: #10b981; }
+  .individuals-accent { background: #ec4899; }
+  .salons-accent { background: #06b6d4; }
+  .orders-accent { background: #f43f5e; }
+
+  .kpi-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .kpi-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .kpi-title {
+    color: $text-secondary;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  .kpi-value-container {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .kpi-value {
+    color: $text-main;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .kpi-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 600;
+
+    &.trend-up {
+      background-color: #ecfdf5;
+      color: #059669;
+    }
+    &.trend-down {
+      background-color: #fef2f2;
+      color: #dc2626;
+    }
+  }
+
+  // Icons wrapper
+  .kpi-icon-container {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+
+    &.appointments-icon { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+    &.freelancers-icon { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    &.users-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    &.individuals-icon { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
+    &.salons-icon { background: rgba(6, 182, 212, 0.1); color: #06b6d4; }
+    &.orders-icon { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+  }
+}
+
+// Chart Cards styling
+.dashboard-chart-card {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  margin-bottom: 24px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  }
+
+  .card-body {
+    padding: 24px;
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    color: $text-main;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .chart-wrapper {
+    margin-top: 15px;
+    position: relative;
+    height: 240px;
+  }
+}
+
+// Table Wrapper and Design
+.custom-dashboard-table-card {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  margin-bottom: 28px;
+  overflow: hidden;
+
+  .card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid $border-color;
+    padding: 20px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-main;
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+.custom-dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background-color: #f8fafc;
+    color: $text-secondary;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 24px;
+    border-bottom: 1px solid $border-color;
+    text-align: left;
+  }
+
+  td {
+    padding: 16px 24px;
+    border-bottom: 1px solid $border-color;
+    color: $text-secondary;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #fafbfd;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .user-avatar {
+    height: 38px;
+    width: 38px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #f1f5f9;
+  }
+
+  .user-name-cell {
+    font-weight: 500;
+    color: $text-main;
+  }
+
+  .service-item-badge {
+    background-color: #f1f5f9;
+    color: $text-secondary;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    margin-right: 4px;
+    display: inline-block;
+  }
+
+  .price-cell {
+    font-weight: 600;
+    color: $text-main;
+  }
+
+  // Dynamic Status Badge capsules
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+
+    &.status-completed {
+      background-color: rgba(16, 185, 129, 0.12);
+      color: #065f46;
+    }
+
+    &.status-cancelled, &.status-rejected {
+      background-color: rgba(244, 63, 94, 0.12);
+      color: #9f1239;
+    }
+
+    &.status-ongoing, &.status-accepted, &.status-active {
+      background-color: rgba(59, 130, 246, 0.12);
+      color: #1e3a8a;
+    }
+
+    &.status-pending, &.status-created {
+      background-color: rgba(245, 158, 11, 0.12);
+      color: #78350f;
+    }
+
+    &.status-refund {
+      background-color: rgba(139, 92, 246, 0.12);
+      color: #4c1d95;
+    }
+  }
+
+  .action-btn {
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &.btn-view {
+      background-color: rgba(99, 102, 241, 0.08);
+      color: #4f46e5;
+      border: 1px solid rgba(99, 102, 241, 0.15);
+
+      &:hover {
+        background-color: #4f46e5;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+// Contacts forms grid spacing
+.contact-detail-box {
+  max-width: 250px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: $text-secondary;
+}

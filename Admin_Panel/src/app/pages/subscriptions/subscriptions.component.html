@@ -1,0 +1,196 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    {{util.translate('Subscriptions')}}
+                    <div class="card-header-actions">
+                        <button type="submit" class="btn btn-sm btn-primary" style="float: right;margin: 0px 5px;"
+                            (click)="createNew()">
+                            {{util.translate('Add New')}}
+                        </button> &nbsp;
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="error_div" *ngIf="list?.length <= 0 && dummy?.length <= 0">
+                        <label>{{util.translate('No Data Found..')}}</label>
+                    </div>
+
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">{{util.translate('Id')}} </th>
+                                <th scope="col">{{util.translate('Name')}} </th>
+                                <th scope="col">{{util.translate('Price')}} </th>
+                                <th scope="col">{{util.translate('Grace Period')}} </th>
+                                <th scope="col">{{util.translate('Action')}} </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of dummy">
+                                <td *ngFor="let item of [1,2,3,4,5]">
+                                    <ngx-skeleton-loader count="1" appearance="line"></ngx-skeleton-loader>
+                                </td>
+                            </tr>
+                            <tr
+                                *ngFor="let item of list | paginate: {id:'pagin1', itemsPerPage: 10, currentPage: page };let i = index;">
+                                <th scope="row">
+                                    {{item.id}}
+                                </th>
+                                <td>
+                                    {{item.name}}
+                                </td>
+                                <td>
+                                    <span *ngIf="util.cside =='left'">{{util.currecny}}
+                                        {{item.price}} </span>
+                                    <span *ngIf="util.cside =='right'">{{item.price}}
+                                        {{util.currecny}}</span>
+                                </td>
+                                <td>
+                                    {{item.grace_period}} / {{item.grace_interval}}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <c-badge [color]="item.status == 1?'success' : 'dark'"
+                                            [class]="item.status == 1 ? 'me-1 badge bg-success' : 'me-1 badge bg-dark' "
+                                            (click)="statusUpdate(item)">
+                                            {{item.status == 1 ? util.translate('Active') :
+                                            util.translate('Deactived')}}
+                                        </c-badge>
+
+                                        <c-badge color="info" class="me-1 badge bg-info" (click)="updateInfo(item)">
+                                            {{ util.translate('Edit')}}
+                                        </c-badge>
+
+                                        <c-badge color="danger" class="me-1 badge bg-danger" (click)="deleteItem(item)">
+                                            {{ util.translate('Delete')}}
+                                        </c-badge>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div *ngIf="list?.length > 0">
+                        <pagination-controls id="pagin1" (pageChange)="page = $event"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #myModal2="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-primary modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{util.translate('Manage Subscriptions')}} </h5>
+                <button type="button" class="close" (click)="myModal2.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="validationServer01" class="form-label">Subscriptions Name
+                                <span class="text-red">*</span> </label>
+                            <div class="input-group input-group-alternative">
+                                <input type="text" id="input-last-name" class="form-control form-control-alternative"
+                                    [(ngModel)]="name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="validationServer01" class="form-label">Subscriptions Short Description
+                                <span class="text-red">*</span> </label>
+                            <div class="input-group input-group-alternative">
+                                <textarea type="text" id="input-last-name" class="form-control form-control-alternative"
+                                    [(ngModel)]="short_desc" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="validationServer01" class="form-label">Subscriptions Features
+                            <span class="text-red">*</span> </label>
+                        <ckeditor [(ngModel)]="features" [config]="ckeConfig" debounce="500">
+                        </ckeditor>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="validationServer01" class="form-label">Subscriptions Price
+                            </label>
+                            <div class="input-group input-group-alternative">
+                                <input type="number" id="input-last-name" class="form-control form-control-alternative"
+                                    [(ngModel)]="price">
+                            </div>
+                            <label class="text-heler" for="text-input">
+                                {{util.translate('Leave Empty For Trial Subscription')}}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="validationServer01" class="form-label">Subscriptions Sign Up Tax
+                            </label>
+                            <div class="input-group input-group-alternative">
+                                <input type="number" id="input-last-name" class="form-control form-control-alternative"
+                                    [(ngModel)]="signup_fee">
+                            </div>
+                            <label class="text-heler" for="text-input">
+                                {{util.translate('Leave Empty For Trial Subscription')}}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="validationServer01" class="form-label">Subscriptions Grace Period<span
+                                    class="text-red">*</span>
+                            </label>
+                            <div class="input-group input-group-alternative">
+                                <input type="number" id="input-last-name" class="form-control form-control-alternative"
+                                    [(ngModel)]="grace_period">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="validationServer01" class="form-label">Subscriptions Grace Interval<span
+                                    class="text-red">*</span>
+                            </label>
+                            <select id="select2" [(ngModel)]="grace_interval" name="select2"
+                                class="form-control form-control-alternative">
+                                <option value="day"> {{util.translate('Day')}} </option>
+                                <option value="month"> {{util.translate('Month')}} </option>
+                                <option value="year"> {{util.translate('Year')}} </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="createSubscription()" *ngIf="action == 'create'">
+                    {{util.translate('Save changes')}}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="updateSubscription()" *ngIf="action == 'update'">
+                    {{util.translate('Save changes')}}
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="myModal2.hide()">
+                    {{util.translate('Close')}}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
