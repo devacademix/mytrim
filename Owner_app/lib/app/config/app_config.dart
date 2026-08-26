@@ -22,8 +22,8 @@ class AppConfig {
   // Base URLs for different environments
   static const Map<String, String> _baseUrls = {
     'dev': 'http://localhost:8001/',
-    'staging': 'https://staging-api.yourdomain.com/',
-    'prod': 'https://api.yourdomain.com/',
+    'staging': 'https://api.mytrim.in/',
+    'prod': 'https://api.mytrim.in/',
   };
 
   // Get base URL for current environment
