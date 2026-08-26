@@ -8,7 +8,7 @@
 			</intent-filter>
 		</activity>
 		<meta-data android:name="flutterEmbedding" android:value="2" />
-		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAB_DxX4Xhb2qVxtzyPYD6B1Vh0SIh03ts" />
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCoIPy2P85k12nzjIT5xFIv62FVnBYErBA" />
 	</application>
 	<queries>
 		<intent>

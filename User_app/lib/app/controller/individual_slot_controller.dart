@@ -22,7 +22,7 @@ class IndividualSlotController extends GetxController implements GetxService {
   String selectedSlotIndex = '';
   DatePickerController controller = DatePickerController();
   DateTime selectedValue = DateTime.now();
-  List<String> dayList = ['Sunday'.tr, 'Monday'.tr, 'Tuesday'.tr, 'Wednesday'.tr, 'Thursday'.tr, 'Friday'.tr, 'Saturday'.tr];
+  List<String> dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   bool isChecked = false;
 

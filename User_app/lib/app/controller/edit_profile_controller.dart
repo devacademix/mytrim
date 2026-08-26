@@ -119,20 +119,25 @@ class EditProfileController extends GetxController implements GetxService {
         ),
         barrierDismissible: false,
       );
-      Response response = await parser.uploadImage(_selectedImage as XFile);
-      Get.back();
-      if (response.statusCode == 200) {
-        _selectedImage = null;
-        if (response.body['data'] != null && response.body['data'] != '') {
-          dynamic body = response.body["data"];
-          if (body['image_name'] != null && body['image_name'] != '') {
-            cover = body['image_name'];
-            debugPrint(cover);
-            update();
+      try {
+        Response response = await parser.uploadImage(_selectedImage as XFile);
+        closeLoadingDialog();
+        if (response.statusCode == 200) {
+          _selectedImage = null;
+          if (response.body['data'] != null && response.body['data'] != '') {
+            dynamic body = response.body["data"];
+            if (body['image_name'] != null && body['image_name'] != '') {
+              cover = body['image_name'];
+              debugPrint(cover);
+              update();
+            }
           }
+        } else {
+          ApiChecker.checkApi(response);
         }
-      } else {
-        ApiChecker.checkApi(response);
+      } catch (e) {
+        closeLoadingDialog();
+        showToast('Image upload failed'.tr);
       }
     }
   }

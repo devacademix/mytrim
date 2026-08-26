@@ -80,16 +80,23 @@ class _ProfileCategoriesState extends State<ProfileCategoriesScreen> {
                                     borderRadius: BorderRadius.circular(100),
                                     child: SizedBox.fromSize(
                                       size: const Size.fromRadius(40),
-                                      child: FadeInImage(
-                                        image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.cover}'),
-                                        placeholder: const AssetImage("assets/images/placeholder.jpeg"),
-                                        imageErrorBuilder: (context, error, stackTrace) {
-                                          return Image.asset('assets/images/notfound.png', fit: BoxFit.cover, height: 40, width: 40);
-                                        },
-                                        fit: BoxFit.cover,
-                                        height: 40,
-                                        width: 40,
-                                      ),
+                                      child: value.cover.isNotEmpty
+                                          ? FadeInImage(
+                                              image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.cover}'),
+                                              placeholder: const AssetImage("assets/images/placeholder.jpeg"),
+                                              imageErrorBuilder: (context, error, stackTrace) {
+                                                return Image.asset('assets/images/placeholder.jpeg', fit: BoxFit.cover, height: 40, width: 40);
+                                              },
+                                              fit: BoxFit.cover,
+                                              height: 40,
+                                              width: 40,
+                                            )
+                                          : Image.asset(
+                                              'assets/images/placeholder.jpeg',
+                                              fit: BoxFit.cover,
+                                              height: 40,
+                                              width: 40,
+                                            ),
                                     ),
                                   ),
                                 ),

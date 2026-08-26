@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:user/app/controller/individual_payment_controller.dart';
 import 'package:user/app/controller/individual_slot_controller.dart';
 import 'package:user/app/controller/service_cart_controller.dart';
+import 'package:user/app/controller/slot_controller.dart';
 import 'package:user/app/env.dart';
 import 'package:user/app/util/theme.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
@@ -18,6 +19,17 @@ class _IndividualPaymentScreenState extends State<IndividualPaymentScreen> {
   static const _sectionTitleStyle = TextStyle(fontFamily: 'bold', fontSize: 15, color: ThemeProvider.textPrimary);
   static const _labelStyle = TextStyle(fontFamily: 'regular', fontSize: 14, color: ThemeProvider.textSecondary);
   static const _valueStyle = TextStyle(fontFamily: 'medium', fontSize: 14, color: ThemeProvider.textPrimary);
+
+  String _getSlotInfo() {
+    if (Get.isRegistered<IndividualSlotController>()) {
+      final slotCtrl = Get.find<IndividualSlotController>();
+      return '${slotCtrl.savedDate} ${slotCtrl.selectedSlotIndex}';
+    } else if (Get.isRegistered<SlotController>()) {
+      final slotCtrl = Get.find<SlotController>();
+      return '${slotCtrl.savedDate} ${slotCtrl.selectedSlotIndex}';
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,23 +66,19 @@ class _IndividualPaymentScreenState extends State<IndividualPaymentScreen> {
                               }
                             },
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(color: ThemeProvider.appColor.withOpacity(0.08), borderRadius: BorderRadius.circular(10)),
-                                      child: const Icon(Icons.local_offer_outlined, color: ThemeProvider.appColor, size: 18),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: value.offerName.isEmpty
-                                          ? Text('Apply Coupon Code'.tr, overflow: TextOverflow.ellipsis, style: _valueStyle)
-                                          : Text('Coupon Applied :'.tr + value.offerName, overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: 'medium', fontSize: 14, color: ThemeProvider.greenColor)),
-                                    ),
-                                  ],
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(color: ThemeProvider.appColor.withOpacity(0.08), borderRadius: BorderRadius.circular(10)),
+                                  child: const Icon(Icons.local_offer_outlined, color: ThemeProvider.appColor, size: 18),
                                 ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: value.offerName.isEmpty
+                                      ? Text('Apply Coupon Code'.tr, overflow: TextOverflow.ellipsis, style: _valueStyle)
+                                      : Text('Coupon Applied :'.tr + value.offerName, overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: 'medium', fontSize: 14, color: ThemeProvider.greenColor)),
+                                ),
+                                const SizedBox(width: 12),
                                 const Icon(Icons.chevron_right, color: ThemeProvider.textSecondary),
                               ],
                             ),
@@ -221,7 +229,7 @@ class _IndividualPaymentScreenState extends State<IndividualPaymentScreen> {
                         const SizedBox(height: 20),
                         Text('Payment Method'.tr, style: _sectionTitleStyle),
                         const SizedBox(height: 10),
-                        value.paymentAPICalled == false ? SizedBox(height: 300, child: SkeletonListView(itemCount: 5)) : const SizedBox(),
+                        value.paymentAPICalled == false ? const Center(child: CircularProgressIndicator(color: ThemeProvider.appColor)) : const SizedBox(),
                         Column(
                           children: List.generate(
                             value.paymentList.length,
@@ -277,58 +285,58 @@ class _IndividualPaymentScreenState extends State<IndividualPaymentScreen> {
                     ),
                   ),
                 ),
-          bottomNavigationBar: Container(
-            decoration: const BoxDecoration(
-              color: ThemeProvider.whiteColor,
-              boxShadow: [BoxShadow(color: Color(0x14000000), blurRadius: 16, offset: Offset(0, -4))],
-            ),
-            height: 136,
-            child: Column(
-              children: [
-                ListTile(
-                  onTap: () => value.onSelectAddress(),
-                  visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                  leading: const Icon(Icons.location_on, size: 16, color: ThemeProvider.appColor),
-                  minLeadingWidth: 0,
-                  title: value.haveAddress == true
-                      ? Text('${value.addressInfo.address} ${value.addressInfo.landmark}', style: const TextStyle(fontSize: 14, color: ThemeProvider.textPrimary))
-                      : Text('Please Add Your Address'.tr, style: const TextStyle(fontSize: 14, color: ThemeProvider.textPrimary)),
-                  trailing: const Icon(Icons.edit_outlined, size: 14, color: ThemeProvider.textSecondary),
-                ),
-                ListTile(
-                  visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                  leading: const Icon(Icons.access_time_sharp, size: 16, color: ThemeProvider.appColor),
-                  minLeadingWidth: 0,
-                  title: Text('${Get.find<IndividualSlotController>().savedDate} ${Get.find<IndividualSlotController>().selectedSlotIndex}', style: const TextStyle(fontSize: 14, color: ThemeProvider.textPrimary)),
-                  trailing: const Icon(Icons.edit_outlined, size: 14, color: ThemeProvider.textSecondary),
-                  onTap: () => value.onBack(),
-                ),
-                value.haveFairDeliveryRadius == true
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 46,
-                          child: ElevatedButton(
-                            onPressed: () => value.onPayment(),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ThemeProvider.appColor,
-                              shadowColor: ThemeProvider.appColor.withOpacity(0.3),
-                              foregroundColor: ThemeProvider.whiteColor,
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                              padding: const EdgeInsets.all(0),
-                            ),
-                            child: Text(
-                              value.currencySide == 'left' ? '${'Pay'} ${value.currencySymbol}${value.grandTotal}' : '${'Pay'} ${value.grandTotal}${value.currencySymbol}',
-                              style: const TextStyle(letterSpacing: 1, fontSize: 16, color: ThemeProvider.whiteColor, fontFamily: 'bold'),
+          bottomNavigationBar: Material(
+            color: ThemeProvider.whiteColor,
+            elevation: 8,
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    onTap: () => value.onSelectAddress(),
+                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                    leading: const Icon(Icons.location_on, size: 16, color: ThemeProvider.appColor),
+                    minLeadingWidth: 0,
+                    title: value.haveAddress == true
+                        ? Text('${value.addressInfo.address} ${value.addressInfo.landmark}', style: const TextStyle(fontSize: 14, color: ThemeProvider.textPrimary))
+                        : Text('Please Add Your Address'.tr, style: const TextStyle(fontSize: 14, color: ThemeProvider.textPrimary)),
+                    trailing: const Icon(Icons.edit_outlined, size: 14, color: ThemeProvider.textSecondary),
+                  ),
+                  ListTile(
+                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                    leading: const Icon(Icons.access_time_sharp, size: 16, color: ThemeProvider.appColor),
+                    minLeadingWidth: 0,
+                    title: Text(_getSlotInfo(), style: const TextStyle(fontSize: 14, color: ThemeProvider.textPrimary)),
+                    trailing: const Icon(Icons.edit_outlined, size: 14, color: ThemeProvider.textSecondary),
+                    onTap: () => value.onBack(),
+                  ),
+                  value.haveFairDeliveryRadius == true
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          margin: const EdgeInsets.only(bottom: 8, top: 4),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 46,
+                            child: ElevatedButton(
+                              onPressed: () => value.onPayment(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ThemeProvider.appColor,
+                                shadowColor: ThemeProvider.appColor.withOpacity(0.3),
+                                foregroundColor: ThemeProvider.whiteColor,
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                padding: const EdgeInsets.all(0),
+                              ),
+                              child: Text(
+                                value.currencySide == 'left' ? '${'Pay'} ${value.currencySymbol}${value.grandTotal}' : '${'Pay'} ${value.grandTotal}${value.currencySymbol}',
+                                style: const TextStyle(letterSpacing: 1, fontSize: 16, color: ThemeProvider.whiteColor, fontFamily: 'bold'),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    : const SizedBox(),
-              ],
+                        )
+                      : const SizedBox(),
+                ],
+              ),
             ),
           ),
         );

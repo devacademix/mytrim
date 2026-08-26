@@ -24,6 +24,8 @@ class CheckoutController extends GetxController implements GetxService {
   @override
   void onInit() {
     _savedInCart = Get.find<ServiceCartController>().savedInCart;
+    currencySide = parser.getCurrencySide();
+    currencySymbol = parser.getCurrencySymbol();
     super.onInit();
   }
 

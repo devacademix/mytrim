@@ -5,9 +5,9 @@ class AppConstants {
   static const String appName = Environments.appName;
   static const String companyName = Environments.companyName;
   static const int userLogin = 0;
-  static const String defaultCurrencyCode = 'USD'; // your currency code in 3 digit
-  static const String defaultCurrencySide = 'right'; // default currency position
-  static const String defaultCurrencySymbol = '\$'; // default currency symbol
+  static const String defaultCurrencyCode = 'INR'; // your currency code in 3 digit
+  static const String defaultCurrencySide = 'left'; // default currency position
+  static const String defaultCurrencySymbol = '₹'; // default currency symbol
   static const int defaultMakeingOrder = 0; // 0=> from multiple stores // 1 = single store only
   static const String defaultSMSGateway = '1'; // 2 = firebase // 1 = rest
   static const String defaultLanguageApp = 'en';

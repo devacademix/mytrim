@@ -178,40 +178,46 @@ $error-bg-glow: rgba(239, 68, 68, 0.15);
   .input-icon {
     position: absolute;
     left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
     color: $text-muted;
     display: flex;
     align-items: center;
     justify-content: center;
     pointer-events: none;
     transition: color 0.3s ease;
+    z-index: 10;
   }
 
   .custom-input {
     width: 100%;
-    background-color: $input-bg;
-    border: 1px solid $input-border;
-    border-radius: 12px;
-    padding: 14px 16px 14px 46px;
-    color: $text-primary;
-    font-size: 15px;
-    font-family: $font-family;
-    outline: none;
+    background-color: $input-bg !important;
+    border: 1px solid $input-border !important;
+    border-radius: 12px !important;
+    padding-left: 48px !important;
+    padding-right: 16px !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+    color: $text-primary !important;
+    font-size: 15px !important;
+    font-family: $font-family !important;
+    outline: none !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &::placeholder {
-      color: $text-muted;
-      opacity: 0.8;
+      color: $text-muted !important;
+      opacity: 0.8 !important;
     }
 
     &:focus {
-      border-color: $input-focus-border;
-      background-color: rgba(7, 8, 15, 0.85);
+      border-color: $input-focus-border !important;
+      background-color: rgba(7, 8, 15, 0.85) !important;
       box-shadow: 
         0 0 0 3px rgba(99, 102, 241, 0.15),
-        0 4px 12px rgba(99, 102, 241, 0.05);
+        0 4px 12px rgba(99, 102, 241, 0.05) !important;
 
       + .input-icon {
-        color: $primary-color;
+        color: $primary-color !important;
       }
     }
   }
@@ -219,17 +225,17 @@ $error-bg-glow: rgba(239, 68, 68, 0.15);
   // Soft Validation Error styles
   &.error {
     .custom-input {
-      border-color: $error-color;
-      box-shadow: 0 0 0 3px $error-bg-glow;
-      background-color: rgba(239, 68, 68, 0.02);
+      border-color: $error-color !important;
+      box-shadow: 0 0 0 3px $error-bg-glow !important;
+      background-color: rgba(239, 68, 68, 0.02) !important;
 
       &:focus {
-        box-shadow: 0 0 0 4px $error-bg-glow;
+        box-shadow: 0 0 0 4px $error-bg-glow !important;
       }
     }
 
     .input-icon {
-      color: $error-color;
+      color: $error-color !important;
     }
   }
 }
@@ -323,15 +329,15 @@ $error-bg-glow: rgba(239, 68, 68, 0.15);
   position: relative;
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 10px;
-  padding: 0 12px;
+  padding: 4px 14px;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(99, 102, 241, 0.5) !important;
   }
 
   .lang-icon {
@@ -339,25 +345,29 @@ $error-bg-glow: rgba(239, 68, 68, 0.15);
     margin-right: 8px;
     display: flex;
     align-items: center;
+    pointer-events: none;
+    z-index: 2;
   }
 
   .custom-select {
-    background: none;
-    border: none;
-    color: $text-secondary;
-    font-size: 13.5px;
-    font-weight: 500;
-    font-family: $font-family;
-    padding: 8px 24px 8px 0;
-    outline: none;
+    background: transparent !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    font-family: $font-family !important;
+    padding: 6px 28px 6px 4px !important;
+    outline: none !important;
     cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    z-index: 1;
 
     option {
-      background-color: #121520;
-      color: $text-primary;
+      background-color: #121520 !important;
+      color: #ffffff !important;
+      padding: 8px 12px;
     }
   }
 
@@ -365,12 +375,13 @@ $error-bg-glow: rgba(239, 68, 68, 0.15);
   &::after {
     content: '';
     position: absolute;
-    right: 12px;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
     width: 6px;
     height: 6px;
     border-right: 2px solid $text-secondary;
     border-bottom: 2px solid $text-secondary;
-    transform: rotate(45deg);
     pointer-events: none;
   }
 }

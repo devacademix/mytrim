@@ -17,6 +17,7 @@ import 'package:owner/app/controller/slot_controller.dart';
 import 'package:owner/app/controller/stylist_controller.dart';
 import 'package:owner/app/helper/router.dart';
 import 'package:owner/app/util/theme.dart';
+import 'package:owner/app/util/toast.dart';
 
 class ProfileController extends GetxController with GetTickerProviderStateMixin implements GetxService {
   final ProfileParser parser;
@@ -121,10 +122,15 @@ class ProfileController extends GetxController with GetTickerProviderStateMixin 
       ),
       barrierDismissible: false,
     );
-    await parser.logout();
-    Get.back();
-    parser.clearAccount();
-    Get.offAllNamed(AppRouter.getInitialRoute());
-    update();
+    try {
+      await parser.logout();
+    } catch (e) {
+      debugPrint("Logout error: $e");
+    } finally {
+      closeLoadingDialog();
+      parser.clearAccount();
+      Get.offAllNamed(AppRouter.getInitialRoute());
+      update();
+    }
   }
 }

@@ -34,19 +34,19 @@ class ServicesModel {
   });
 
   ServicesModel.fromJson(Map<String, dynamic> json) {
-    id = int.parse(json['id'].toString());
-    uid = int.parse(json['uid'].toString());
-    cateId = int.parse(json['cate_id'].toString());
-    name = json['name'];
-    cover = json['cover'];
-    duration = double.parse(json['duration'].toString());
-    price = double.parse(json['price'].toString());
-    off = double.parse(json['off'].toString());
-    discount = double.parse(json['discount'].toString());
-    descriptions = json['descriptions'];
-    images = json['images'];
-    extraField = json['extra_field'];
-    status = int.parse(json['status'].toString());
+    id = num.tryParse(json['id']?.toString() ?? '')?.toInt() ?? 0;
+    uid = num.tryParse(json['uid']?.toString() ?? '')?.toInt() ?? 0;
+    cateId = num.tryParse(json['cate_id']?.toString() ?? '')?.toInt() ?? 0;
+    name = json['name']?.toString() ?? '';
+    cover = json['cover']?.toString() ?? '';
+    duration = num.tryParse(json['duration']?.toString() ?? '')?.toDouble() ?? 0.0;
+    price = num.tryParse(json['price']?.toString() ?? '')?.toDouble() ?? 0.0;
+    off = num.tryParse(json['off']?.toString() ?? '')?.toDouble() ?? 0.0;
+    discount = num.tryParse(json['discount']?.toString() ?? '')?.toDouble() ?? 0.0;
+    descriptions = json['descriptions']?.toString() ?? '';
+    images = json['images']?.toString() ?? '';
+    extraField = json['extra_field']?.toString() ?? '';
+    status = num.tryParse(json['status']?.toString() ?? '')?.toInt() ?? 1;
     webCatesData = json['web_cates_data'] != null ? WebCatesData.fromJson(json['web_cates_data']) : null;
   }
 
@@ -83,11 +83,11 @@ class WebCatesData {
   WebCatesData({this.id, this.name, this.cover, this.extraField, this.status});
 
   WebCatesData.fromJson(Map<String, dynamic> json) {
-    id = int.parse(json['id'].toString());
-    name = json['name'];
-    cover = json['cover'];
-    extraField = json['extra_field'];
-    status = int.parse(json['status'].toString());
+    id = num.tryParse(json['id']?.toString() ?? '')?.toInt() ?? 0;
+    name = json['name']?.toString() ?? '';
+    cover = json['cover']?.toString() ?? '';
+    extraField = json['extra_field']?.toString() ?? '';
+    status = num.tryParse(json['status']?.toString() ?? '')?.toInt() ?? 1;
   }
 
   Map<String, dynamic> toJson() {

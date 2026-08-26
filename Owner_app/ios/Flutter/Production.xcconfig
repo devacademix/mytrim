@@ -1,0 +1,10 @@
+// Production Environment Configuration
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Generated.xcconfig"
+
+// App Configuration
+APP_DISPLAY_NAME = Owner App
+PRODUCT_BUNDLE_IDENTIFIER = io.saundarya.ultimate.salon.owner
+
+// Environment Variables
+DART_DEFINES = ENV=prod

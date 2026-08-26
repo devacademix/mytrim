@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:user/app/config/app_config.dart';
 import 'package:user/app/controller/find_location_controller.dart';
 import 'package:user/app/util/theme.dart';
 
@@ -97,7 +99,25 @@ class _FindLocationScreenState extends State<FindLocationScreen> {
                         child: SizedBox(
                           height: 300,
                           width: double.infinity,
-                          child: GoogleMap(onMapCreated: value.onMapCreated, markers: value.markers, initialCameraPosition: CameraPosition(target: LatLng(value.myLat, value.myLng), zoom: 15)),
+                          child: (kIsWeb || defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS)
+                              ? GoogleMap(onMapCreated: value.onMapCreated, markers: value.markers, initialCameraPosition: CameraPosition(target: LatLng(value.myLat, value.myLng), zoom: 15))
+                              : Container(
+                                  color: Colors.grey[200],
+                                  child: Image.network(
+                                    "https://maps.googleapis.com/maps/api/staticmap?center=${value.myLat},${value.myLng}&zoom=15&size=800x400&markers=color:purple%7C${value.myLat},${value.myLng}&key=${AppConfig.googleMapsKey}",
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.location_on, size: 48, color: ThemeProvider.appColor),
+                                          const SizedBox(height: 8),
+                                          Text('${value.myLat.toStringAsFixed(6)}, ${value.myLng.toStringAsFixed(6)}', style: const TextStyle(color: Colors.grey)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                         ),
                       )
                     : const SizedBox(),

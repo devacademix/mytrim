@@ -9,7 +9,10 @@ class ServicesParser {
 
   ServicesParser({required this.sharedPreferencesManager, required this.apiService});
 
-  Future<Response> getServices(var body) async {
+  Future<Response> getServices(var body, {int page = 1, int limit = 20}) async {
+    // Add pagination params
+    body['page'] = page;
+    body['limit'] = limit;
     var response = await apiService.postPrivate(AppConstants.getMyServices, body, sharedPreferencesManager.getString('token') ?? '');
     return response;
   }

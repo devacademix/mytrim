@@ -18,7 +18,7 @@ export class LoginComponent {
     public util: UtilService,
     private router: Router
   ) {
-    this.langId = localStorage.getItem('selectedLanguage');
+    this.langId = localStorage.getItem('selectedLanguage') || 'en';
   }
 
   onLogin() {

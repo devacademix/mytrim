@@ -13,13 +13,29 @@ class HistoryParser {
     return sharedPreferencesManager.getString('type') ?? '';
   }
 
-  Future<Response> getSalonList() async {
-    var response = await apiService.postPrivate(AppConstants.getSalonOrdersList, {"id": sharedPreferencesManager.getString('uid')}, sharedPreferencesManager.getString('token') ?? '');
+  Future<Response> getSalonList({int page = 1, int limit = 20}) async {
+    var response = await apiService.postPrivate(
+      AppConstants.getSalonOrdersList,
+      {
+        "id": sharedPreferencesManager.getString('uid'),
+        "page": page,
+        "limit": limit,
+      },
+      sharedPreferencesManager.getString('token') ?? '',
+    );
     return response;
   }
 
-  Future<Response> getIndividualOrdersList() async {
-    var response = await apiService.postPrivate(AppConstants.getIndividualOrdersList, {"id": sharedPreferencesManager.getString('uid')}, sharedPreferencesManager.getString('token') ?? '');
+  Future<Response> getIndividualOrdersList({int page = 1, int limit = 20}) async {
+    var response = await apiService.postPrivate(
+      AppConstants.getIndividualOrdersList,
+      {
+        "id": sharedPreferencesManager.getString('uid'),
+        "page": page,
+        "limit": limit,
+      },
+      sharedPreferencesManager.getString('token') ?? '',
+    );
     return response;
   }
 

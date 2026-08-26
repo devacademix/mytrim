@@ -20,6 +20,14 @@ class ServicesController extends GetxController implements GetxService {
 
   bool apiCalled = false;
 
+  int _currentPage = 1;
+  final int _pageSize = 20;
+  bool _hasMoreData = true;
+  bool _isLoadingMore = false;
+
+  bool get hasMoreData => _hasMoreData;
+  bool get isLoadingMore => _isLoadingMore;
+
   ServicesController({required this.parser});
 
   @override
@@ -30,21 +38,77 @@ class ServicesController extends GetxController implements GetxService {
     currencySymbol = parser.getCurrencySymbol();
   }
 
-  Future<void> getServices() async {
-    var response = await parser.getServices({"id": parser.sharedPreferencesManager.getString('uid')});
-    apiCalled = true;
-    if (response.statusCode == 200) {
-      Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
-      var body = myMap['data'];
-      _servicesList = [];
-      body.forEach((element) {
-        ServicesModel service = ServicesModel.fromJson(element);
-        _servicesList.add(service);
-      });
+  Future<void> getServices({bool loadMore = false}) async {
+    if (loadMore) {
+      if (_isLoadingMore || !_hasMoreData) return;
+      _isLoadingMore = true;
+      _currentPage++;
     } else {
-      ApiChecker.checkApi(response);
+      _currentPage = 1;
+      _hasMoreData = true;
     }
-    update();
+
+    try {
+      var response = await parser.getServices(
+        {"id": parser.sharedPreferencesManager.getString('uid')},
+        page: _currentPage,
+        limit: _pageSize,
+      );
+      debugPrint('getServices uid: ${parser.sharedPreferencesManager.getString('uid')}');
+      debugPrint('getServices status: ${response.statusCode}, body: ${response.bodyString}');
+      apiCalled = true;
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
+        var body = myMap['data'];
+
+        if (body == null || (body is List && body.isEmpty)) {
+          if (!loadMore) {
+            _servicesList = [];
+          }
+          _hasMoreData = false;
+        } else {
+          List<ServicesModel> newServices = [];
+          if (body is List) {
+            body.forEach((element) {
+              if (element != null) {
+                ServicesModel service = ServicesModel.fromJson(element);
+                newServices.add(service);
+              }
+            });
+          }
+
+          if (loadMore) {
+            _servicesList.addAll(newServices);
+          } else {
+            _servicesList = newServices;
+          }
+
+          if (newServices.length < _pageSize) {
+            _hasMoreData = false;
+          }
+        }
+      } else {
+        ApiChecker.checkApi(response);
+        if (loadMore) {
+          _currentPage--;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error getting services: $e');
+      apiCalled = true;
+    } finally {
+      _isLoadingMore = false;
+      update();
+    }
+  }
+
+  void loadMoreServices() {
+    getServices(loadMore: true);
+  }
+
+  Future<void> refreshServices() async {
+    await getServices();
   }
 
   Future<void> updateStatus(int id, int status) async {

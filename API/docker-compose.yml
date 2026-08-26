@@ -43,7 +43,8 @@ services:
     environment:
       MYSQL_DATABASE: salon_api
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: salon_api_user
+      MYSQL_PASSWORD: IOnxkL3m23ZujcOiKQKnJHRV
     volumes:
       - dbdata:/var/lib/mysql
     networks:

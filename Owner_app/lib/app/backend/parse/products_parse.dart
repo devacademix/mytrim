@@ -9,7 +9,10 @@ class ProductsParser {
 
   ProductsParser({required this.sharedPreferencesManager, required this.apiService});
 
-  Future<Response> getProductWFreelancer(var body) async {
+  Future<Response> getProductWFreelancer(var body, {int page = 1, int limit = 20}) async {
+    // Add pagination params
+    body['page'] = page;
+    body['limit'] = limit;
     var response = await apiService.postPrivate(AppConstants.getProductWFreelancer, body, sharedPreferencesManager.getString('token') ?? '');
     return response;
   }

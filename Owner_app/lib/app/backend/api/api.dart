@@ -3,13 +3,23 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:owner/app/config/app_config.dart';
+import 'package:owner/app/helper/retry_manager.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiService extends GetxService {
   final String appBaseUrl;
   static const String connectionIssue = 'Connection failed!';
-  final int timeoutInSeconds = 30;
+  
+  // Dynamic timeout based on environment
+  int get timeoutInSeconds => AppConfig.apiTimeout;
 
-  ApiService({required this.appBaseUrl});
+  ApiService({required this.appBaseUrl}) {
+    if (kDebugMode) {
+      print('🔗 API Service initialized with base URL: $appBaseUrl');
+      print('⏱️  API Timeout: ${timeoutInSeconds}s');
+    }
+  }
 
   Future<Response> getPublic(String uri) async {
     try {
@@ -18,6 +28,14 @@ class ApiService extends GetxService {
     } catch (e) {
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
+  }
+
+  /// Get public endpoint with retry
+  Future<Response> getPublicWithRetry(String uri, {int retries = 3}) async {
+    return await RetryManager.instance.retryApiCall(
+      () => getPublic(uri),
+      retries: retries,
+    );
   }
 
   Future<Response> getPrivate(String uri, String token) async {
@@ -30,18 +48,35 @@ class ApiService extends GetxService {
     }
   }
 
+  /// Get private endpoint with retry
+  Future<Response> getPrivateWithRetry(String uri, String token, {int retries = 3}) async {
+    return await RetryManager.instance.retryApiCall(
+      () => getPrivate(uri, token),
+      retries: retries,
+    );
+  }
+
   Future<Response> uploadFiles(String uri, List<MultipartBody> multipartBody) async {
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
       for (MultipartBody multipart in multipartBody) {
-        File file = File(multipart.file.path);
-        // Use Uri.file for cross-platform filename extraction (handles both / and \)
-        String fileName = Uri.file(file.path).pathSegments.last;
-        request.files.add(http.MultipartFile(multipart.key, file.readAsBytes().asStream(), file.lengthSync(), filename: fileName));
+        List<int> bytes = await multipart.file.readAsBytes();
+        String fileName = multipart.file.name;
+        if (fileName.isEmpty) {
+          fileName = Uri.file(multipart.file.path).pathSegments.last;
+        }
+        request.files.add(http.MultipartFile.fromBytes(
+          multipart.key,
+          bytes,
+          filename: fileName,
+        ));
       }
       http.Response response = await http.Response.fromStream(await request.send().timeout(Duration(seconds: timeoutInSeconds)));
       return parseResponse(response, uri);
     } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ uploadFiles error: $e');
+      }
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
   }
@@ -55,6 +90,14 @@ class ApiService extends GetxService {
     }
   }
 
+  /// Post public endpoint with retry
+  Future<Response> postPublicWithRetry(String uri, dynamic body, {Map<String, String>? headers, int retries = 3}) async {
+    return await RetryManager.instance.retryApiCall(
+      () => postPublic(uri, body, headers: headers),
+      retries: retries,
+    );
+  }
+
   Future<Response> postPrivate(String uri, dynamic body, String token) async {
     try {
       http.Response response = await http
@@ -63,6 +106,14 @@ class ApiService extends GetxService {
     } catch (e) {
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
+  }
+
+  /// Post private endpoint with retry
+  Future<Response> postPrivateWithRetry(String uri, dynamic body, String token, {int retries = 3}) async {
+    return await RetryManager.instance.retryApiCall(
+      () => postPrivate(uri, body, token),
+      retries: retries,
+    );
   }
 
   Future<Response> logout(String uri, String token) async {
@@ -80,17 +131,21 @@ class ApiService extends GetxService {
     try {
       body = jsonDecode(res.body);
     } catch (e) {
-      e;
+      body = res.body;
     }
-    Response response = Response(body: body != '' ? body : res.body, bodyString: res.body.toString(), headers: res.headers, statusCode: res.statusCode, statusText: res.reasonPhrase);
+    Response response = Response(
+      body: body != null && body != '' ? body : res.body,
+      bodyString: res.body.toString(),
+      headers: res.headers,
+      statusCode: res.statusCode,
+      statusText: res.reasonPhrase,
+    );
     if (response.statusCode != 200 && response.body != null && response.body is! String) {
       if (response.body.toString().startsWith('{errors: [{code:')) {
         response = Response(statusCode: response.statusCode, body: response.body, statusText: 'error');
       } else if (response.body.toString().startsWith('{message')) {
         response = Response(statusCode: response.statusCode, body: response.body, statusText: response.body['message']);
       }
-    } else if (response.statusCode != 200 && response.body == null) {
-      response = const Response(statusCode: 0, statusText: connectionIssue);
     }
     return response;
   }

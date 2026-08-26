@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:owner/app/config/app_config.dart';
 import 'package:owner/app/util/theme.dart';
 
 class PickLocationScreen extends StatefulWidget {
@@ -75,6 +77,50 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
     }
   }
 
+  Widget _buildMapBody() {
+    if (kIsWeb || defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
+      return GoogleMap(
+        initialCameraPosition: CameraPosition(target: _selected, zoom: 16),
+        onMapCreated: (controller) => _mapController = controller,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
+        zoomControlsEnabled: false,
+        onCameraMove: (position) => _selected = position.target,
+        onCameraIdle: () => _resolveAddress(_selected),
+      );
+    }
+
+    final String staticMapUrl =
+        "https://maps.googleapis.com/maps/api/staticmap?center=${_selected.latitude},${_selected.longitude}&zoom=15&size=800x600&markers=color:purple%7C${_selected.latitude},${_selected.longitude}&key=${AppConfig.googleMapsKey}";
+
+    return Container(
+      color: Colors.grey[100],
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              staticMapUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.location_on, size: 64, color: ThemeProvider.appColor),
+                    const SizedBox(height: 12),
+                    const Text('Location Map (Desktop Mode)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 6),
+                    Text('Latitude: ${_selected.latitude.toStringAsFixed(6)}, Longitude: ${_selected.longitude.toStringAsFixed(6)}',
+                        style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,23 +133,16 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
       ),
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(target: _selected, zoom: 16),
-            onMapCreated: (controller) => _mapController = controller,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            onCameraMove: (position) => _selected = position.target,
-            onCameraIdle: () => _resolveAddress(_selected),
-          ),
-          IgnorePointer(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: Icon(Icons.location_on, size: 48, color: ThemeProvider.appColor),
+          _buildMapBody(),
+          if (kIsWeb || defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS)
+            IgnorePointer(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: Icon(Icons.location_on, size: 48, color: ThemeProvider.appColor),
+                ),
               ),
             ),
-          ),
           Positioned(
             right: 16,
             bottom: 150,

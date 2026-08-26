@@ -85,14 +85,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), border: Border.all(color: ThemeProvider.borderColor, width: 1)),
                               width: 96,
                               height: 96,
-                              child: FadeInImage(
-                                image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.cover.toString()}'),
-                                placeholder: const AssetImage("assets/images/placeholder.jpeg"),
-                                imageErrorBuilder: (context, error, stackTrace) {
-                                  return Image.asset('assets/images/notfound.png', fit: BoxFit.cover, height: 96, width: 96);
-                                },
-                                fit: BoxFit.cover,
-                              ),
+                              child: value.cover.toString().isNotEmpty
+                                  ? FadeInImage(
+                                      image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.cover.toString()}'),
+                                      placeholder: const AssetImage("assets/images/placeholder.jpeg"),
+                                      imageErrorBuilder: (context, error, stackTrace) {
+                                        return Image.asset('assets/images/placeholder.jpeg', fit: BoxFit.cover, height: 96, width: 96);
+                                      },
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      'assets/images/placeholder.jpeg',
+                                      fit: BoxFit.cover,
+                                      height: 96,
+                                      width: 96,
+                                    ),
                             ),
                             Positioned(
                               bottom: 0,

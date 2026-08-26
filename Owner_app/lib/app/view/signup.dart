@@ -173,19 +173,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                   Container(
                                                     padding: const EdgeInsets.all(3),
                                                     decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: ThemeProvider.dividerColor, width: 1)),
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(100),
-                                                      child: FadeInImage(
-                                                        height: 92,
-                                                        width: 92,
-                                                        image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.cover}'),
-                                                        placeholder: const AssetImage("assets/images/placeholder.jpeg"),
-                                                        imageErrorBuilder: (context, error, stackTrace) {
-                                                          return Image.asset('assets/images/notfound.png', fit: BoxFit.cover, height: 92, width: 92);
-                                                        },
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
+                                                     child: ClipRRect(
+                                                       borderRadius: BorderRadius.circular(100),
+                                                       child: value.cover.isNotEmpty
+                                                           ? FadeInImage(
+                                                               height: 92,
+                                                               width: 92,
+                                                               image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.cover}'),
+                                                               placeholder: const AssetImage("assets/images/placeholder.jpeg"),
+                                                               imageErrorBuilder: (context, error, stackTrace) {
+                                                                 return Image.asset('assets/images/placeholder.jpeg', fit: BoxFit.cover, height: 92, width: 92);
+                                                               },
+                                                               fit: BoxFit.cover,
+                                                             )
+                                                           : Image.asset(
+                                                               'assets/images/placeholder.jpeg',
+                                                               height: 92,
+                                                               width: 92,
+                                                               fit: BoxFit.cover,
+                                                             ),
+                                                     ),
                                                   ),
                                                   Positioned(
                                                     bottom: -2,

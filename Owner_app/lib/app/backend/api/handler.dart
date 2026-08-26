@@ -1,12 +1,8 @@
 import 'package:get/get.dart';
-import 'package:owner/app/util/toast.dart';
+import 'package:owner/app/helper/error_handler.dart';
 
 class ApiChecker {
   static void checkApi(Response response) {
-    if (response.statusCode == 401) {
-      showToast('Session expired!'.tr);
-    } else {
-      showToast(response.statusText.toString().tr);
-    }
+    ErrorHandler.handleApiError(response);
   }
 }

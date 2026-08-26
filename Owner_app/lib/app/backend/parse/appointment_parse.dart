@@ -13,13 +13,29 @@ class AppointmentParser {
     return sharedPreferencesManager.getString('type') ?? '';
   }
 
-  Future<Response> getSalonList() async {
-    var response = await apiService.postPrivate(AppConstants.getSalonAppointmentsList, {"id": sharedPreferencesManager.getString('uid')}, sharedPreferencesManager.getString('token') ?? '');
+  Future<Response> getSalonList({int page = 1, int limit = 20}) async {
+    var response = await apiService.postPrivate(
+      AppConstants.getSalonAppointmentsList,
+      {
+        "id": sharedPreferencesManager.getString('uid'),
+        "page": page,
+        "limit": limit,
+      },
+      sharedPreferencesManager.getString('token') ?? '',
+    );
     return response;
   }
 
-  Future<Response> getIndividualAppointmentsList() async {
-    var response = await apiService.postPrivate(AppConstants.getIndividualAppointmentsList, {"id": sharedPreferencesManager.getString('uid')}, sharedPreferencesManager.getString('token') ?? '');
+  Future<Response> getIndividualAppointmentsList({int page = 1, int limit = 20}) async {
+    var response = await apiService.postPrivate(
+      AppConstants.getIndividualAppointmentsList,
+      {
+        "id": sharedPreferencesManager.getString('uid'),
+        "page": page,
+        "limit": limit,
+      },
+      sharedPreferencesManager.getString('token') ?? '',
+    );
     return response;
   }
 

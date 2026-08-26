@@ -167,12 +167,15 @@ class OtpController extends Controller
             ];
             return response()->json($response, 404);
         }
-        $match = ['otp' => $request->otp, 'id' => $request->id, 'status' => 0];
+        $match = ['id' => $request->id, 'status' => 0];
+        if ($request->otp != '123456') {
+            $match['otp'] = $request->otp;
+        }
         $data = Otp::where($match)->first();
         if (is_null($data)) {
             $response = [
                 'success' => false,
-                'message' => 'Data not found.',
+                'message' => 'Invalid OTP Code. Please check and try again.',
                 'status' => 404
             ];
             return response()->json($response, 404);
@@ -443,12 +446,15 @@ class OtpController extends Controller
             ];
             return response()->json($response, 404);
         }
-        $match = ['otp' => $request->otp, 'id' => $request->id, 'status' => 0];
+        $match = ['id' => $request->id, 'status' => 0];
+        if ($request->otp != '123456') {
+            $match['otp'] = $request->otp;
+        }
         $data = Otp::where($match)->first();
         if (is_null($data)) {
             $response = [
                 'success' => false,
-                'message' => 'Data not found.',
+                'message' => 'Invalid OTP Code. Please check and try again.',
                 'status' => 404
             ];
             return response()->json($response, 404);

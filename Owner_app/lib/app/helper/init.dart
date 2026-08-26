@@ -53,6 +53,8 @@ import 'package:owner/app/controller/profile_controller.dart';
 import 'package:owner/app/controller/tabs_controller.dart';
 import 'package:owner/app/env.dart';
 import 'package:owner/app/helper/shared_pref.dart';
+import 'package:owner/app/helper/cache_manager.dart';
+import 'package:owner/app/helper/connectivity_manager.dart';
 
 class MainBinding extends Bindings {
   @override
@@ -62,6 +64,12 @@ class MainBinding extends Bindings {
       SharedPreferencesManager(sharedPreferences: sharedPref),
       permanent: true,
     );
+
+    // Initialize cache manager
+    await CacheManager.instance.init();
+
+    // Initialize connectivity manager
+    await ConnectivityManager.instance.init();
 
     Get.lazyPut(() => ApiService(appBaseUrl: Environments.apiBaseURL));
 

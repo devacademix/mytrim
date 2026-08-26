@@ -58,21 +58,13 @@ class AddServicesController extends GetxController implements GetxService {
   }
 
   Future<void> onSubmit() async {
-    if (nameTextEditor.text == '' ||
-        nameTextEditor.text.isEmpty ||
-        selectedServicesId == '' ||
+    if (nameTextEditor.text.trim().isEmpty ||
         selectedServicesId.isEmpty ||
-        durationTextEditor.text == '' ||
-        durationTextEditor.text.isEmpty ||
-        priceTextEditor.text == '' ||
-        priceTextEditor.text.isEmpty ||
-        discountTextEditor.text == '' ||
-        discountTextEditor.text.isEmpty ||
-        descriptionsTextEditor.text == '' ||
-        descriptionsTextEditor.text.isEmpty ||
-        cover == '' ||
+        durationTextEditor.text.trim().isEmpty ||
+        priceTextEditor.text.trim().isEmpty ||
+        descriptionsTextEditor.text.trim().isEmpty ||
         cover.isEmpty) {
-      showToast('All fields are required!');
+      showToast('Name, Category, Duration, Price, Description and Cover image are required!');
       return;
     }
 
@@ -92,28 +84,34 @@ class AddServicesController extends GetxController implements GetxService {
       barrierDismissible: false,
     );
 
+    String priceVal = priceTextEditor.text.trim();
+    String discountVal = discountTextEditor.text.trim().isEmpty ? '0' : discountTextEditor.text.trim();
+    String offVal = offTextEditor.text.trim().isEmpty ? priceVal : offTextEditor.text.trim();
+
     var body = {
       "uid": parser.getUID(),
-      "name": nameTextEditor.text,
+      "name": nameTextEditor.text.trim(),
       "cate_id": selectedServicesId,
-      "duration": durationTextEditor.text,
-      "price": priceTextEditor.text,
-      "off": offTextEditor.text,
-      "discount": discountTextEditor.text,
+      "duration": durationTextEditor.text.trim(),
+      "price": priceVal,
+      "off": offVal,
+      "discount": discountVal,
       "images": jsonEncode(gallery),
       "cover": cover,
       "extra_field": 'NA',
       "status": selectedStatus,
-      "descriptions": descriptionsTextEditor.text,
+      "descriptions": descriptionsTextEditor.text.trim(),
     };
 
     var response = await parser.onSubmit(body);
-    Get.back();
+    closeLoadingDialog();
     if (response.statusCode == 200) {
       debugPrint(response.bodyString);
-      Get.find<ServicesController>().getServices();
       successToast('Services Added !');
       onBack();
+      if (Get.isRegistered<ServicesController>()) {
+        Get.find<ServicesController>().getServices();
+      }
     } else {
       ApiChecker.checkApi(response);
     }
@@ -154,22 +152,26 @@ class AddServicesController extends GetxController implements GetxService {
   }
 
   Future<void> onUpdateService() async {
+    String priceVal = priceTextEditor.text.trim();
+    String discountVal = discountTextEditor.text.trim().isEmpty ? '0' : discountTextEditor.text.trim();
+    String offVal = offTextEditor.text.trim().isEmpty ? priceVal : offTextEditor.text.trim();
+
     var body = {
-      "name": nameTextEditor.text,
+      "name": nameTextEditor.text.trim(),
       "cate_id": selectedServicesId,
-      "duration": durationTextEditor.text,
-      "price": priceTextEditor.text,
-      "off": offTextEditor.text,
-      "discount": discountTextEditor.text,
+      "duration": durationTextEditor.text.trim(),
+      "price": priceVal,
+      "off": offVal,
+      "discount": discountVal,
       "images": jsonEncode(gallery),
       "cover": cover,
       "extra_field": 'NA',
       "status": selectedStatus,
-      "descriptions": descriptionsTextEditor.text,
+      "descriptions": descriptionsTextEditor.text.trim(),
       "id": serviceId
     };
     var response = await parser.onUpdateService(body);
-    Get.back();
+    closeLoadingDialog();
     if (response.statusCode == 200) {
       debugPrint(response.bodyString);
       Get.find<ServicesController>().getServices();

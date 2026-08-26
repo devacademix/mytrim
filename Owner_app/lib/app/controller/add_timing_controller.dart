@@ -13,7 +13,7 @@ class AddTimingController extends GetxController implements GetxService {
 
   bool userType = true;
 
-  List<String> dayList = ['Sunday'.tr, 'Monday'.tr, 'Tuesday'.tr, 'Wednesday'.tr, 'Thursday'.tr, 'Friday'.tr, 'Saturday'.tr];
+  List<String> dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   String openTime = '';
   String closeTime = '';
 

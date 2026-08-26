@@ -1,0 +1,11 @@
+// Development Environment Configuration
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+#include "Generated.xcconfig"
+
+// App Configuration
+APP_DISPLAY_NAME = Owner (Dev)
+PRODUCT_BUNDLE_IDENTIFIER = io.saundarya.ultimate.salon.owner.dev
+
+// Environment Variables
+// These will be available in Dart via --dart-define
+DART_DEFINES = ENV=dev

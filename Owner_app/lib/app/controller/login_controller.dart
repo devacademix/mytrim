@@ -90,50 +90,55 @@ class LoginController extends GetxController implements GetxService {
       barrierDismissible: false,
     );
 
-    var response = await parser.onLogin(body);
-    Get.back();
-    if (response.statusCode == 200) {
-      Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
-      debugPrint(myMap['user']['id'].toString());
-
-      if (myMap['user'] != '' && myMap['token'] != '' && (myMap['user']['type'] == 'salon' || myMap['user']['type'] == 'individual')) {
-        debugPrint(myMap['user']['id'].toString());
-        debugPrint(myMap['user']['id'].toString());
-
-        parser.saveToken(myMap['token']);
-        parser.saveInfo(myMap['user']['id'].toString(), myMap['user']['first_name'].toString(), myMap['user']['last_name'].toString(), myMap['user']['cover'].toString(),
-            myMap['user']['email'].toString(), myMap['user']['mobile'].toString(), myMap['user']['type'].toString());
-        if (myMap['user']['type'].toString() == 'individual') {
-          parser.saveOtherInfo('${myMap['user']['first_name']} ${myMap['user']['last_name']}', myMap['user']['cover'].toString(), myMap['individual']['background'].toString(),
-              double.parse(myMap['individual']['rating'].toString()), myMap['individual']['total_rating'].toString());
+    try {
+      var response = await parser.onLogin(body);
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      if (response.statusCode == 200) {
+        if (response.body != null && response.body is Map) {
+          Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
+          if (myMap['user'] != null && myMap['user'] != '' && myMap['token'] != null && myMap['token'] != '' && (myMap['user']['type'] == 'salon' || myMap['user']['type'] == 'individual')) {
+            parser.saveToken(myMap['token']);
+            parser.saveInfo(myMap['user']['id'].toString(), myMap['user']['first_name'].toString(), myMap['user']['last_name'].toString(), myMap['user']['cover'].toString(),
+                myMap['user']['email'].toString(), myMap['user']['mobile'].toString(), myMap['user']['type'].toString());
+            if (myMap['user']['type'].toString() == 'individual') {
+              parser.saveOtherInfo('${myMap['user']['first_name']} ${myMap['user']['last_name']}', myMap['user']['cover'].toString(), myMap['individual']['background'].toString(),
+                  double.parse(myMap['individual']['rating'].toString()), myMap['individual']['total_rating'].toString());
+            } else {
+              parser.saveOtherInfo(
+                  myMap['salon']['name'].toString(), myMap['salon']['cover'].toString(), 'NA', double.parse(myMap['salon']['rating'].toString()), myMap['salon']['total_rating'].toString());
+            }
+            var updateParam = {"id": myMap['user']['id'].toString(), 'fcm_token': parser.getFcmToken()};
+            await parser.updateProfile(updateParam, myMap['token']);
+            onNavigate();
+          } else {
+            showToast('Access denied'.tr);
+          }
         } else {
-          parser.saveOtherInfo(
-              myMap['salon']['name'].toString(), myMap['salon']['cover'].toString(), 'NA', double.parse(myMap['salon']['rating'].toString()), myMap['salon']['total_rating'].toString());
+          showToast('Invalid response from server'.tr);
         }
-        var updateParam = {"id": myMap['user']['id'].toString(), 'fcm_token': parser.getFcmToken()};
-        await parser.updateProfile(updateParam, myMap['token']);
-        onNavigate();
+      } else if (response.statusCode == 401 || response.statusCode == 400 || response.statusCode == 404 || response.statusCode == 500) {
+        String errorMsg = 'Email or password is incorrect. Authentication failed.'.tr;
+        if (response.body != null && response.body is Map) {
+          Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
+          if (myMap.containsKey('error') && myMap['error'] != null && myMap['error'].toString().isNotEmpty) {
+            errorMsg = myMap['error'].toString().tr;
+          } else if (myMap.containsKey('message') && myMap['message'] != null && myMap['message'].toString().isNotEmpty) {
+            errorMsg = myMap['message'].toString().tr;
+          }
+        }
+        showToast(errorMsg);
+        update();
       } else {
-        showToast('Access denied'.tr);
+        ApiChecker.checkApi(response);
+        update();
       }
-    } else if (response.statusCode == 401) {
-      Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
-      if (myMap['error'] != '') {
-        showToast(myMap['error'.tr]);
-      } else {
-        showToast('Something went wrong'.tr);
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
       }
-      update();
-    } else if (response.statusCode == 500) {
-      Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
-      if (myMap['error'] != '') {
-        showToast(myMap['error'.tr]);
-      } else {
-        showToast('Something went wrong'.tr);
-      }
-      update();
-    } else {
-      ApiChecker.checkApi(response);
+      showToast('Connection error. Please check your network or server status.'.tr);
       update();
     }
   }

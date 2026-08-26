@@ -13,9 +13,9 @@ import 'package:owner/app/util/toast.dart';
 class AddSlotController extends GetxController implements GetxService {
   final AddSlotParser parser;
 
-  String dayName = 'Sunday'.tr;
+  String dayName = 'Sunday';
 
-  List<String> dayList = ['Sunday'.tr, 'Monday'.tr, 'Tuesday'.tr, 'Wednesday'.tr, 'Thursday'.tr, 'Friday'.tr, 'Saturday'.tr];
+  List<String> dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   String openTime = '';
   String closeTime = '';
 
@@ -105,7 +105,15 @@ class AddSlotController extends GetxController implements GetxService {
 
   Future<void> saveSlots() async {
     if (_slotList.isEmpty) {
-      showToast('Slots are empty');
+      if (openTime.isNotEmpty && closeTime.isNotEmpty) {
+        addSlots();
+      } else {
+        showToast('Please select Open Time and Close Time, then tap Add');
+        return;
+      }
+    }
+    if (_slotList.isEmpty) {
+      showToast('Please add at least one slot');
       return;
     }
     Get.dialog(
@@ -141,7 +149,15 @@ class AddSlotController extends GetxController implements GetxService {
 
   Future<void> updateSlots() async {
     if (_slotList.isEmpty) {
-      showToast('Slots are empty');
+      if (openTime.isNotEmpty && closeTime.isNotEmpty) {
+        addSlots();
+      } else {
+        showToast('Please select Open Time and Close Time, then tap Add');
+        return;
+      }
+    }
+    if (_slotList.isEmpty) {
+      showToast('Please add at least one slot');
       return;
     }
     Get.dialog(

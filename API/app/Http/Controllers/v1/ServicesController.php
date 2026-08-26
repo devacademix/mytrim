@@ -19,11 +19,8 @@ class ServicesController extends Controller
             'cate_id' => 'required',
             'duration' => 'required',
             'price' => 'required',
-            'off' => 'required',
-            'discount' => 'required',
             'images' => 'required',
             'cover' => 'required',
-            'extra_field' => 'required',
             'status' => 'required',
             'descriptions' => 'required'
         ]);
@@ -31,20 +28,31 @@ class ServicesController extends Controller
             $response = [
                 'success' => false,
                 'message' => 'Validation Error.',
-                $validator->errors(),
-                'status' => 500
+                'errors' => $validator->errors(),
+                'status' => 400
             ];
-            return response()->json($response, 404);
+            return response()->json($response, 400);
         }
 
-        $data = Services::create($request->all());
+        $input = $request->all();
+        if (!isset($input['discount']) || $input['discount'] === '') {
+            $input['discount'] = 0;
+        }
+        if (!isset($input['off']) || $input['off'] === '') {
+            $input['off'] = $input['price'];
+        }
+        if (!isset($input['extra_field']) || $input['extra_field'] === '') {
+            $input['extra_field'] = 'NA';
+        }
+
+        $data = Services::create($input);
         if (is_null($data)) {
             $response = [
                 'data' => $data,
                 'message' => 'error',
                 'status' => 500,
             ];
-            return response()->json($response, 200);
+            return response()->json($response, 500);
         }
         $response = [
             'data' => $data,

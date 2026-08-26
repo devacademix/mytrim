@@ -269,6 +269,12 @@ class SalonController extends Controller
             ->orderBy('distance')
             ->where(['salon.status' => 1, 'salon.in_home' => 1])
             ->get();
+        if ($salon->isEmpty()) {
+            $salon = Salon::select(DB::raw('salon.id as id,salon.uid as uid,salon.name as name,salon.rating as rating,
+            salon.total_rating as total_rating,salon.address as address,salon.cover as cover,salon.lat as salon_lat,salon.lng as salon_lng,salon.categories, 0 AS distance'))
+                ->where(['salon.status' => 1, 'salon.in_home' => 1])
+                ->get();
+        }
         foreach ($salon as $loop) {
             $ids = explode(',', $loop->categories);
             $loop->categories = Category::select('id', 'name', 'cover')->WhereIn('id', $ids)->get();
@@ -279,6 +285,11 @@ class SalonController extends Controller
             ->orderBy('distance')
             ->where(['individual.status' => 1, 'individual.in_home' => 1])
             ->get();
+        if ($freelancer->isEmpty()) {
+            $freelancer = Individual::select(DB::raw('individual.id as id,individual.fee_start as fee_start,individual.categories,individual.total_rating as total_rating,individual.rating as rating,individual.uid as uid,individual.lat as lat,individual.lng as lng, 0 AS distance'))
+                ->where(['individual.status' => 1, 'individual.in_home' => 1])
+                ->get();
+        }
         foreach ($freelancer as $loop) {
             $loop->userInfo = User::select('first_name', 'last_name', 'cover')->find($loop->uid);
             $ids = explode(',', $loop->categories);

@@ -13,19 +13,21 @@ class SalonModel {
   SalonModel({this.id, this.salonUid, this.cateId, this.firstName, this.lastName, this.cover, this.extraField, this.status, this.categories, this.isChecked});
 
   SalonModel.fromJson(Map<String, dynamic> json) {
-    id = int.parse(json['id'].toString());
-    salonUid = int.parse(json['salon_uid'].toString());
-    cateId = json['cate_id'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    cover = json['cover'];
-    extraField = json['extra_field'];
-    isChecked = json['isChecked'];
-    status = int.parse(json['status'].toString());
-    if (json['categories'] != null) {
+    id = num.tryParse(json['id']?.toString() ?? '')?.toInt() ?? 0;
+    salonUid = num.tryParse(json['salon_uid']?.toString() ?? '')?.toInt() ?? 0;
+    cateId = json['cate_id']?.toString() ?? '';
+    firstName = json['first_name']?.toString() ?? '';
+    lastName = json['last_name']?.toString() ?? '';
+    cover = json['cover']?.toString() ?? '';
+    extraField = json['extra_field']?.toString() ?? '';
+    isChecked = json['isChecked'] ?? false;
+    status = num.tryParse(json['status']?.toString() ?? '')?.toInt() ?? 1;
+    if (json['categories'] != null && json['categories'] is List) {
       categories = <Categories>[];
       json['categories'].forEach((v) {
-        categories!.add(Categories.fromJson(v));
+        if (v != null) {
+          categories!.add(Categories.fromJson(v));
+        }
       });
     }
   }
@@ -56,9 +58,9 @@ class Categories {
   Categories({this.id, this.name, this.cover});
 
   Categories.fromJson(Map<String, dynamic> json) {
-    id = int.parse(json['id'].toString());
-    name = json['name'];
-    cover = json['cover'];
+    id = num.tryParse(json['id']?.toString() ?? '')?.toInt() ?? 0;
+    name = json['name']?.toString() ?? '';
+    cover = json['cover']?.toString() ?? '';
   }
 
   Map<String, dynamic> toJson() {

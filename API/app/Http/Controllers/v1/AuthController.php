@@ -362,18 +362,24 @@ class AuthController extends Controller
     public function uploadImage(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image:jpeg,png,jpg,gif,svg|max:2048'
+            'image' => 'required|mimes:jpeg,png,jpg,gif,svg,webp|max:10240'
         ]);
         if ($validator->fails()) {
             $response = [
                 'success' => false,
-                'message' => 'Validation Error.',
-                $validator->errors(),
-                'status' => 500
+                'message' => 'Image validation error: ' . implode(', ', $validator->errors()->all()),
+                'errors' => $validator->errors(),
+                'status' => 400
             ];
-            return response()->json($response, 505);
+            return response()->json($response, 400);
         }
-        Artisan::call('storage:link', []);
+        try {
+            if (!file_exists(public_path('storage'))) {
+                Artisan::call('storage:link', []);
+            }
+        } catch (\Throwable $e) {
+            // Ignore symlink creation errors on Windows/Docker
+        }
         $uploadFolder = 'images';
         $image = $request->file('image');
         $image_uploaded_path = $image->store($uploadFolder, 'public');
@@ -1365,19 +1371,23 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'status' => 0,
             ]);
-            $mailTo = Mail::send(
-                'mails/register',
-                [
-                    'app_name' => $generalInfo->name,
-                    'otp' => $otp
-                ]
-                ,
-                function ($message) use ($mail, $username, $subject, $generalInfo) {
-                    $message->to($mail, $username)
-                        ->subject($subject);
-                    $message->from($generalInfo->email, $generalInfo->name);
-                }
-            );
+            $mailTo = true;
+            try {
+                Mail::send(
+                    'mails/register',
+                    [
+                        'app_name' => $generalInfo->name,
+                        'otp' => $otp
+                    ],
+                    function ($message) use ($mail, $username, $subject, $generalInfo) {
+                        $message->to($mail, $username)
+                            ->subject($subject);
+                        $message->from($generalInfo->email, $generalInfo->name);
+                    }
+                );
+            } catch (\Throwable $e) {
+                \Log::error('Mail send error: ' . $e->getMessage());
+            }
 
             $response = [
                 'data' => true,
@@ -1886,19 +1896,23 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'status' => 0,
             ]);
-            $mailTo = Mail::send(
-                'mails/register',
-                [
-                    'app_name' => $settings->name,
-                    'otp' => $otp
-                ]
-                ,
-                function ($message) use ($mail, $username, $subject, $settings) {
-                    $message->to($mail, $username)
-                        ->subject($subject);
-                    $message->from($settings->email, $settings->name);
-                }
-            );
+            $mailTo = true;
+            try {
+                Mail::send(
+                    'mails/register',
+                    [
+                        'app_name' => $settings->name,
+                        'otp' => $otp
+                    ],
+                    function ($message) use ($mail, $username, $subject, $settings) {
+                        $message->to($mail, $username)
+                            ->subject($subject);
+                        $message->from($settings->email, $settings->name);
+                    }
+                );
+            } catch (\Throwable $e) {
+                \Log::error('Mail send error: ' . $e->getMessage());
+            }
 
             $response = [
                 'data' => true,

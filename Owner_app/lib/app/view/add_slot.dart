@@ -11,10 +11,14 @@ class AddSlotScreen extends StatefulWidget {
 }
 
 class _AddSlotScreenState extends State<AddSlotScreen> {
+  static const List<String> _days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AddSlotController>(
       builder: (value) {
+        final String selectedDay = _days.contains(value.dayName) ? value.dayName : _days.first;
+
         return Scaffold(
           backgroundColor: ThemeProvider.surfaceTint,
           appBar: AppBar(
@@ -23,134 +27,142 @@ class _AddSlotScreenState extends State<AddSlotScreen> {
             centerTitle: true,
             elevation: 0,
             toolbarHeight: 50,
-            title: Text('Add Slots'.tr, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start, style: ThemeProvider.titleStyle),
+            title: Text('Add Slots'.tr, style: ThemeProvider.titleStyle),
           ),
           body: value.apiCalled == false
               ? const Center(child: CircularProgressIndicator(color: ThemeProvider.appColor))
               : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(14.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: ThemeProvider.cardDecoration(),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(color: ThemeProvider.appColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
-                                      child: const Icon(Icons.event_repeat, size: 16, color: ThemeProvider.appColor),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Day'.tr, style: const TextStyle(fontSize: 11, color: ThemeProvider.subtleTextColor)),
-                                          DropdownButton<String>(
-                                            value: value.dayName,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: ThemeProvider.cardDecoration(),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(color: ThemeProvider.appColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                                    child: const Icon(Icons.event_repeat, size: 20, color: ThemeProvider.appColor),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Day'.tr, style: const TextStyle(fontSize: 12, color: ThemeProvider.subtleTextColor)),
+                                        const SizedBox(height: 2),
+                                        DropdownButtonHideUnderline(
+                                          child: DropdownButton<String>(
+                                            value: selectedDay,
                                             isExpanded: true,
                                             icon: const Icon(Icons.expand_more, color: ThemeProvider.mutedTextColor),
-                                            elevation: 16,
                                             style: const TextStyle(fontFamily: 'medium', fontSize: 14, color: ThemeProvider.blackColor),
-                                            underline: const SizedBox(),
-                                            onChanged: (String? newValue) => value.onUpdateDayName(newValue.toString()),
-                                            items: <String>['Sunday'.tr, 'Monday'.tr, 'Tuesday'.tr, 'Wednesday'.tr, 'Thursday'.tr, 'Friday'.tr, 'Saturday'.tr]
-                                                .map<DropdownMenuItem<String>>((String selected) {
-                                              return DropdownMenuItem<String>(value: selected, child: Text(selected));
+                                            onChanged: (String? newValue) {
+                                              if (newValue != null) value.onUpdateDayName(newValue);
+                                            },
+                                            items: _days.map<DropdownMenuItem<String>>((String day) {
+                                              return DropdownMenuItem<String>(
+                                                value: day,
+                                                child: Text(day.tr),
+                                              );
                                             }).toList(),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(height: 1, color: ThemeProvider.dividerColor),
-                              _TimeRow(
-                                icon: Icons.wb_sunny_outlined,
-                                label: 'Open Time'.tr,
-                                value: value.openTime == '' ? 'Open Time'.tr : value.openTime.toString(),
-                                isPlaceholder: value.openTime == '',
-                                onTap: () => value.openTimePicker(),
-                              ),
-                              const Divider(height: 1, color: ThemeProvider.dividerColor),
-                              _TimeRow(
-                                icon: Icons.nights_stay_outlined,
-                                label: 'Close Time'.tr,
-                                value: value.closeTime == '' ? 'Close Time'.tr : value.closeTime.toString(),
-                                isPlaceholder: value.closeTime == '',
-                                onTap: () => value.closeTimePicker(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (value.slotList.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('Added Slots'.tr, style: const TextStyle(fontFamily: 'bold', fontSize: 12, color: ThemeProvider.mutedTextColor)),
-                          ),
-                          const SizedBox(height: 10),
-                          Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
-                            children: List.generate(
-                              value.slotList.length,
-                              (index) => _SlotChip(
-                                label: '${value.slotList[index].startTime} to ${value.slotList[index].endTime}',
-                                onDelete: () => _showDeleteDialog(context, message: 'to delete this slot ?'.tr, onConfirm: () => value.onDestroy(index)),
+                                  ),
+                                ],
                               ),
                             ),
+                            const Divider(height: 1, color: ThemeProvider.dividerColor),
+                            _TimeRow(
+                              icon: Icons.wb_sunny_outlined,
+                              label: 'Open Time'.tr,
+                              value: value.openTime.isEmpty ? 'Open Time'.tr : value.openTime,
+                              isPlaceholder: value.openTime.isEmpty,
+                              onTap: () => value.openTimePicker(),
+                            ),
+                            const Divider(height: 1, color: ThemeProvider.dividerColor),
+                            _TimeRow(
+                              icon: Icons.nights_stay_outlined,
+                              label: 'Close Time'.tr,
+                              value: value.closeTime.isEmpty ? 'Close Time'.tr : value.closeTime,
+                              isPlaceholder: value.closeTime.isEmpty,
+                              onTap: () => value.closeTimePicker(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (value.slotList.isNotEmpty) ...[
+                        const SizedBox(height: 18),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('Added Slots'.tr, style: const TextStyle(fontFamily: 'bold', fontSize: 13, color: ThemeProvider.blackColor)),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: List.generate(
+                            value.slotList.length,
+                            (index) => _SlotChip(
+                              label: '${value.slotList[index].startTime} to ${value.slotList[index].endTime}',
+                              onDelete: () => _showDeleteDialog(context, message: 'to delete this slot ?'.tr, onConfirm: () => value.onDestroy(index)),
+                            ),
                           ),
-                        ],
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => value.addSlots(),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ThemeProvider.appColor,
-                      side: const BorderSide(color: ThemeProvider.appColor),
-                      minimumSize: const Size.fromHeight(46),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ThemeProvider.chipRadius)),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: ThemeProvider.whiteColor,
+              boxShadow: ThemeProvider.cardShadow,
+            ),
+            child: SafeArea(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => value.addSlots(),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ThemeProvider.appColor,
+                        side: const BorderSide(color: ThemeProvider.appColor, width: 1.4),
+                        minimumSize: const Size.fromHeight(48),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text('Add'.tr, style: const TextStyle(fontFamily: 'bold', fontSize: 14)),
                     ),
-                    child: Text('Add'.tr, style: const TextStyle(fontFamily: 'bold')),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(ThemeProvider.chipRadius),
-                    onTap: () {
-                      if (value.action == 'create') {
-                        value.saveSlots();
-                      } else {
-                        value.updateSlots();
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 13.0),
-                      decoration: contentButtonStyle(),
-                      child: Center(
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        if (value.action == 'create') {
+                          value.saveSlots();
+                        } else {
+                          value.updateSlots();
+                        }
+                      },
+                      child: Container(
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: contentButtonStyle(),
                         child: Text('Save & Submit'.tr, style: const TextStyle(fontFamily: 'bold', color: ThemeProvider.whiteColor, fontSize: 14)),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -179,14 +191,14 @@ class _TimeRow extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(color: ThemeProvider.appColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
-              child: Icon(icon, size: 16, color: ThemeProvider.appColor),
+              child: Icon(icon, size: 20, color: ThemeProvider.appColor),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: const TextStyle(fontSize: 11, color: ThemeProvider.subtleTextColor)),
+                  Text(label, style: const TextStyle(fontSize: 12, color: ThemeProvider.subtleTextColor)),
                   const SizedBox(height: 2),
                   Text(value, style: TextStyle(fontSize: 14, fontFamily: 'medium', color: isPlaceholder ? ThemeProvider.subtleTextColor : ThemeProvider.blackColor)),
                 ],
@@ -301,7 +313,7 @@ void _showDeleteDialog(BuildContext context, {required String message, required 
 
 contentButtonStyle() {
   return const BoxDecoration(
-    borderRadius: BorderRadius.all(Radius.circular(100.0)),
+    borderRadius: BorderRadius.all(Radius.circular(12.0)),
     gradient: LinearGradient(begin: Alignment.centerLeft, end: Alignment.centerRight, colors: [Color.fromARGB(229, 52, 1, 255), Color.fromARGB(228, 111, 75, 255)]),
   );
 }

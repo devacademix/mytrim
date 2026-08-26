@@ -32,21 +32,31 @@ class StylistController extends GetxController implements GetxService {
   }
 
   Future<void> getBySalonId() async {
-    var response = await parser.getBySalonId({"id": parser.sharedPreferencesManager.getString('uid')});
-    apiCalled = true;
-    if (response.statusCode == 200) {
-      Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
-      var body = myMap['data'];
-      _salonList = [];
-      body.forEach((element) {
-        SalonModel salon = SalonModel.fromJson(element);
-        _salonList.add(salon);
-        debugPrint(response.bodyString.toString());
-      });
-    } else {
-      ApiChecker.checkApi(response);
+    try {
+      var response = await parser.getBySalonId({"id": parser.sharedPreferencesManager.getString('uid')});
+      apiCalled = true;
+      if (response.statusCode == 200) {
+        Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
+        var body = myMap['data'];
+        List<SalonModel> list = [];
+        if (body != null && body is List) {
+          body.forEach((element) {
+            if (element != null) {
+              SalonModel salon = SalonModel.fromJson(element);
+              list.add(salon);
+            }
+          });
+        }
+        _salonList = list;
+      } else {
+        ApiChecker.checkApi(response);
+      }
+    } catch (e) {
+      debugPrint('Error getting stylists: $e');
+      apiCalled = true;
+    } finally {
+      update();
     }
-    update();
   }
 
   void onAddStylist() {

@@ -7,10 +7,15 @@ import 'package:owner/app/util/theme.dart';
 import 'package:owner/app/util/translator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:owner/app/config/app_config.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Print configuration in debug mode
+  AppConfig.printConfig();
+  
   await MainBinding().dependencies();
   if (!kIsWeb) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

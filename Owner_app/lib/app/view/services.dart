@@ -36,14 +36,25 @@ class _ServicesScreenState extends State<ServicesScreen> {
           ),
           body: value.apiCalled == false
               ? SkeletonListView()
-              : value.servicesList.isEmpty
-                  ? const _EmptyState(message: 'No Services Found!')
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
-                      itemCount: value.servicesList.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, i) => _ServiceCard(item: value.servicesList[i], value: value),
-                    ),
+              : RefreshIndicator(
+                  onRefresh: () => value.refreshServices(),
+                  color: ThemeProvider.appColor,
+                  child: value.servicesList.isEmpty
+                      ? SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            child: const _EmptyState(message: 'No Services Found!'),
+                          ),
+                        )
+                      : ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
+                          itemCount: value.servicesList.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          itemBuilder: (context, i) => _ServiceCard(item: value.servicesList[i], value: value),
+                        ),
+                ),
         );
       },
     );
@@ -107,7 +118,7 @@ class _ServiceCard extends StatelessWidget {
               children: [
                 Text(item.name.toString(), overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: 'bold', fontSize: 14, color: ThemeProvider.blackColor)),
                 const SizedBox(height: 3),
-                Text(item.webCatesData!.name.toString(), overflow: TextOverflow.ellipsis, style: const TextStyle(color: ThemeProvider.mutedTextColor, fontSize: 12)),
+                Text(item.webCatesData != null && item.webCatesData!.name != null ? item.webCatesData!.name.toString() : '', overflow: TextOverflow.ellipsis, style: const TextStyle(color: ThemeProvider.mutedTextColor, fontSize: 12)),
                 const SizedBox(height: 6),
                 Row(
                   children: [
